@@ -47,9 +47,18 @@ APDS9301::status APDS9301::enableInterrupt(APDS9301::interruptEnable intMode)
   uint8_t regVal = getRegister(INTERRUPT_REG);
   // This is not a typo- OFF requires bits 4&5 to be cleared, but
   //  ON only requires bit 4 to be set. I dunno why.
-  if (intMode == INT_OFF) regVal &= ~0x20;
+  if (intMode == INT_OFF) regVal &= ~0x30;
   else                    regVal |= 0x10;
   return setRegister(INTERRUPT_REG, regVal);
+}
+
+APDS9301::status APDS9301::clearIntFlag()
+{
+  Wire.beginTransmission(address);
+  Wire.write(0xC0);
+  APDS9301::status retVal;
+  if (Wire.endTransmission() == 0) return SUCCESS;
+  else return I2C_FAILURE;
 }
 
 APDS9301::status APDS9301::setCyclesForInterrupt(uint8_t cycles)
@@ -63,20 +72,14 @@ APDS9301::status APDS9301::setCyclesForInterrupt(uint8_t cycles)
 
 APDS9301::status APDS9301::setLowThreshold(unsigned int threshold)
 {
-  uint8_t xmitVal = threshold;
-  int retVal = setRegister(THRESHLOWLOW_REG, xmitVal);
-  xmitVal = threshold >> 8;
-  retVal |= setRegister(THRESHLOWHI_REG, xmitVal);
+  int retVal = setTwoRegisters(THRESHLOWLOW_REG, threshold);
   if (retVal == 0) return SUCCESS;
   else             return I2C_FAILURE;
 }
 
 APDS9301::status APDS9301::setHighThreshold(unsigned int threshold)
 {
-  uint8_t xmitVal = threshold;
-  int retVal = setRegister(THRESHHILOW_REG, xmitVal);
-  xmitVal = threshold >> 8;
-  retVal |= setRegister(THRESHHIHI_REG, xmitVal);
+  int retVal = setTwoRegisters(THRESHHILOW_REG, threshold);
   if (retVal == 0) return SUCCESS;
   else             return I2C_FAILURE;
 }
@@ -134,12 +137,12 @@ unsigned int APDS9301::readCH1Level()
   return getTwoRegisters(DATA1LOW_REG);
 }
 
-double APDS9301::readLuxLevel()
+float APDS9301::readLuxLevel()
 {
   unsigned int ch1Int = readCH1Level();
   unsigned int ch0Int = readCH0Level();
-  double ch0 = (double)readCH0Level();
-  double ch1 = (double)readCH1Level();
+  float ch0 = (float)readCH0Level();
+  float ch1 = (float)readCH1Level();
   switch (getIntegrationTime())
   {
     case INT_TIME_13_7_MS:
@@ -162,7 +165,7 @@ double APDS9301::readLuxLevel()
     }
     break;
   }
-  double ratio = ch1/ch0;
+  float ratio = ch1/ch0;
   switch (getIntegrationTime())
   {
     case INT_TIME_13_7_MS:
@@ -204,6 +207,7 @@ double APDS9301::readLuxLevel()
   }
 
   return luxVal;
+  return 0;
 }
 
 uint8_t APDS9301::getRegister(uint8_t regAddress)
@@ -212,18 +216,15 @@ uint8_t APDS9301::getRegister(uint8_t regAddress)
   Wire.write(regAddress);
   Wire.endTransmission(false);
   Wire.requestFrom(address, (uint8_t)1);
-  while (Wire.available() == 0);
   return Wire.read();
 }
 
 uint16_t APDS9301::getTwoRegisters(uint8_t regAddress)
 {
-  
   Wire.beginTransmission(address);
-  Wire.write(regAddress);
+  Wire.write(0x20 | regAddress);
   Wire.endTransmission(false);
   Wire.requestFrom(address, (uint8_t)2);
-  while (Wire.available() < 2);
   uint16_t regVal = Wire.read();
   return regVal | (Wire.read()<<8);
 }
@@ -233,8 +234,17 @@ APDS9301::status APDS9301::setRegister(uint8_t regAddress, uint8_t newVal)
   Wire.beginTransmission(address);
   Wire.write(regAddress);
   Wire.write(newVal);
-  uint8_t retVal = Wire.endTransmission(false);
-  if (retVal == 0) return SUCCESS;
-  else             return I2C_FAILURE;
+  if (Wire.endTransmission() == 0) return SUCCESS;
+  else return I2C_FAILURE;
+
 }
 
+APDS9301::status APDS9301::setTwoRegisters(uint8_t regAddress, uint16_t newVal)
+{
+  Wire.beginTransmission(address);
+  Wire.write(0x20 | regAddress);
+  Wire.write((uint8_t)newVal);
+  Wire.write((uint8_t)(newVal>>8));
+  if (Wire.endTransmission() == 0) return SUCCESS;
+  else return I2C_FAILURE;
+}

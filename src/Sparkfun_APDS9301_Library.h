@@ -72,6 +72,9 @@ class APDS9301
   // Enable or disable interrupt.
   status enableInterrupt(interruptEnable intMode);
 
+  // Clear the interrupt flag.
+  status clearIntFlag();
+
   // Number of cycles outside of threshold range before interrupt is
   //  asserted. 0 generates an interrupt on every ADC cycle, 1 will
   //  generate an interrupt if the value of channel 0 (Vis + IR level)
@@ -106,7 +109,7 @@ class APDS9301
   unsigned int readCH1Level();
 
   // Calculated Lux level. Accurate to within +/- 40%.
-  double readLuxLevel();
+  float readLuxLevel();
 
   private:
   uint8_t address;
@@ -114,5 +117,6 @@ class APDS9301
   uint8_t getRegister(uint8_t regAddress);
   status setRegister(uint8_t regAddress, uint8_t newVal);
   uint16_t getTwoRegisters(uint8_t regAddress);
+  status setTwoRegisters(uint8_t regAddress, uint16_t newVal);
 };
 

@@ -43,6 +43,7 @@ getHighThreshold	KEYWORD2
 readCH0Level	KEYWORD2
 readCH1Level	KEYWORD2
 readLuxLevel	KEYWORD2
+clearIntFlag	KEYWORD2
 
 
 # Class names and data types
