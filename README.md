@@ -24,7 +24,7 @@ Documentation
 Version History
 -------------------
 
-* [v 1.0.0](https://github.com/sparkfun/SparkFun_APDS9301_Library/tree/V_1.0.0) - Initial release
+* [v1.0.0](https://github.com/sparkfun/SparkFun_APDS9301_Library/tree/V1.0.0) - Initial release
 
 
 License Information
