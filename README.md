@@ -1,9 +1,12 @@
 SparkFun APDS-9301 Arduino Library
 ==========
-The APDS-9301 is an I2C light sensor capable of returning the current Lux value
-of the local visible light. 
 
-SparkFun does not currently sell a breakout just for the APDS-9301.
+
+![APDS-9301 Lux Sensor Breakout](https://cdn.sparkfun.com//assets/parts/1/2/3/3/5/14350-01.jpg)  
+
+[*APDS-9301 Lux Sensor Breakout (SEN-14350)*](https://www.sparkfun.com/products/14350)
+
+The APDS-9301 Lux Sensor Breakout is a small I<sup>2</sup>C based sensor with dynamic range. The APDS-9301 is an I2C light sensor capable of returning the current Lux value of the local visible light. 
 
 Repository Contents
 -------------------
@@ -15,6 +18,8 @@ Repository Contents
 Documentation
 -------------------
 * **[Installing an Arduino Library Guide](https://learn.sparkfun.com/tutorials/installing-an-arduino-library)** - Basic information on how to install an Arduino library.
+* **[Hookup Guide](https://learn.sparkfun.com/tutorials/apds-9301-sensor-hookup-guide)** - Basic hookup guide for the APDS-9301 Breakout Board.
+* **[GitHub Product Repo](https://github.com/sparkfun/APDS-9301_Breakout)**
 
 Version History
 -------------------
